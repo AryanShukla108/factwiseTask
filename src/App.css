@@ -2,55 +2,196 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.input-search {
+  margin-top: 10px;
+  border: 1px solid black;
+  width: 300px;
+  height: 30px;
+  border-radius: 12px;
+  padding: 12px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-.app-parent{
+.app-parent {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.name{
+.name {
+  border-radius: 12px;
   border: 1px solid black;
   padding: 12px;
   margin: 20px;
-  width: fit-content;
-  height: fit-content;
-
+  width: 300px;
+  min-height: 100%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.drop-down {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
+.img-div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
+.picture {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.parent {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.des {
+  margin-top: 10px;
+}
+
+.actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  justify-content: end;
+}
+
+.EditIcon {
+  cursor: pointer;
+  color: rgb(67, 67, 157);
+  width: 20px;
+  height: 20px;
+}
+
+.EditIcons {
+  cursor: pointer;
+  color: red;
+  width: 20px;
+  height: 20px;
+}
+
+.KeyboardArrowDownIcon {
+  cursor: pointer;
+}
+
+.name-inp {
+  border-radius: 6px;
+  width: 65px;
+  margin-right: 6px;
+  border: 1px solid grey;
+}
+
+.inp {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-icon {
+  cursor: pointer;
+  border: 2px solid green;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+}
+
+.CheckIcon {
+  color: green;
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.btn-icons {
+  cursor: pointer;
+  border: 2px solid rgb(134, 8, 12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+}
+
+.CheckIcons {
+  color: rgb(107, 7, 7);
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 300px;
+  text-align: center;
+}
+
+.modal-content button {
+  margin: 10px;
+  padding: 10px 20px;
+}
+
+.error-message {
+  color: red;
+  font-size: 9px;
+}
+
+.close-btn {
+  display: flex;
+  justify-content: end;
+}
+
+.btn-all {
+  margin-top: 10px;
+  display: flex;
+  justify-content: end;
+}
+
+.del {
+  cursor: pointer;
+  border: none;
+  background: rgb(236, 5, 28);
+  color: white;
+  font-size: 12px;
+  border-radius: 12px;
+}
+
+.bac {
+  cursor: pointer;
+  border: 1px solid grey;
+  background: transparent;
+  color: black;
+  font-size: 12px;
+  border-radius: 12px;
+}

@@ -1,8 +1,17 @@
 import { useState } from "react";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import { Formik } from "formik";
 import "./App.css";
+import * as Yup from "yup";
+import { X } from "react-feather";
 
 function App() {
-  const factWisedata = [
+  const initialData = [
     {
       id: 1,
       first: "Aidan",
@@ -245,31 +254,280 @@ function App() {
     },
   ];
 
+  const [users, setUsers] = useState(initialData);
   const [open, setOpen] = useState(null);
+  const [search, setSearch] = useState("");
+  const [editId, setEditId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+
+  const UserSchema = Yup.object().shape({
+    first: Yup.string().required("First name is required"),
+    last: Yup.string().required("Last name is required"),
+    dob: Yup.date().required("DOB is required").test(
+      'is-adult',
+      'You must be at least 18 years old',
+      value => {
+        return new Date().getFullYear() - new Date(value).getFullYear() >= 18;
+      }
+    ),
+    country: Yup.string()
+      .matches(/^[a-zA-Z\s]*$/, "Only letters are allowed")
+      .required("Country is required"),
+    description: Yup.string().required("Description is required"),
+  });
 
   const handleClick = (id) => {
     setOpen(id === open ? null : id);
   };
+
+  const handleSearch = (e) => {
+    setSearch(e?.target?.value);
+  };
+
+  const handleEdit = (id) => {
+    setEditId(id);
+  };
+
+  const handleDelete = (id) => {
+    const updatedUsers = users.filter((user) => user.id !== id);
+    setUsers(updatedUsers);
+    setShowModal(false);
+  };
+
+  const handleDeleteClick = (id) => {
+    setShowModal(true);
+    setDeleteId(id);
+  };
+
+  const handleSaveEdit = (values) => {
+    const updatedUsers = users.map((user) =>
+      user.id === editId ? { ...user, ...values } : user
+    );
+    setUsers(updatedUsers);
+    setEditId(null);
+  };
+
+  const handleCancelEdit = () => {
+    setEditId(null);
+  };
+
+  const filteredUsers = users.filter((user) =>
+    `${user.first} ${user.last}`.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const calculateAge = (dob) => {
+    const birthDate = new Date(dob);
+    const ageDiffernce = Date.now() - birthDate.getTime();
+    const ageDate = new Date(ageDiffernce);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  };
+
   return (
     <div className="App">
       <div className="app-parent">
-        {factWisedata.map((data) => {
+        <input
+          type="text"
+          placeholder="Search by name..."
+          value={search}
+          onChange={handleSearch}
+          className="input-search"
+        />
+        {filteredUsers.map((user) => {
           return (
-            <div key={data.id}>
-              <div onClick={() => handleClick(data.id)} className="name">
-                <span>{data.first}</span> <span>{data.last}</span>
-                {open === data.id && (
-                  <div className="parent">
-                    <div>{data.country}</div>
+            <div key={user?.id}>
+              {editId === user.id ? (
+                ""
+              ) : (
+                <div onClick={() => handleClick(user?.id)} className="name">
+                  <div className="drop-down">
+                    <div className="img-div">
+                      {" "}
+                      <img
+                        src={user?.picture}
+                        alt="picture"
+                        className="picture"
+                      />{" "}
+                      <span>{user?.first}</span> <span>{user?.last}</span>
+                    </div>
+                    <div className="KeyboardArrowDownIcon">
+                      {/* <KeyboardArrowDownIcon /> */}
+                      {open === user?.id ? <AddIcon /> : <RemoveIcon />}
+                    </div>
                   </div>
-                )}
-              </div>
-              <div>
-              </div>
+                  {open === user?.id && (
+                    <div>
+                      <div className="parent">
+                        <div>{calculateAge(user?.dob)}</div>
+                        <div>{user.gender}</div>
+                        <div>{user.country}</div>
+                      </div>
+                      <div className="des">{user?.description}</div>
+                      <div className="actions">
+                        <EditIcon
+                          className="EditIcon"
+                          onClick={() => handleEdit(user.id)}
+                        />
+                        <DeleteIcon
+                          className="EditIcons"
+                          onClick={() => handleDeleteClick(user.id)}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              {editId === user.id && (
+                <div className="name">
+                  <Formik
+                    initialValues={user}
+                    validationSchema={UserSchema}
+                    onSubmit={handleSaveEdit}
+                  >
+                    {({
+                      values,
+                      errors,
+                      touched,
+                      handleChange,
+                      handleSubmit,
+                      handleBlur,
+                    }) => (
+                      <form onSubmit={handleSubmit} className="edit-form">
+                        <div className="drop-down">
+                          <div>
+                            {" "}
+                            <img
+                              src={user?.picture}
+                              alt="picture"
+                              className="picture"
+                            />
+                          </div>
+                          <div>
+                            <input
+                              type="text"
+                              name="first"
+                              className="name-inp"
+                              value={values.first}
+                              onChange={handleChange}
+                              placeholder="First Name"
+                            />
+                            {touched.first && errors.first && (
+                              <div className="error-message">
+                                {errors.first}
+                              </div>
+                            )}
+                            <input
+                              type="text"
+                              name="last"
+                              className="name-inp"
+                              value={values.last}
+                              onChange={handleChange}
+                              placeholder="Last Name"
+                            />
+                            {touched.last && errors.last && (
+                              <div className="error-message">{errors.last}</div>
+                            )}
+                          </div>
+                          <div className="KeyboardArrowDownIcon">
+                            {/* <KeyboardArrowDownIcon /> */}
+                            {editId === user.id ? <AddIcon /> : <RemoveIcon />}
+                          </div>
+                        </div>
+                        <div className="drop-down">
+                          <input
+                            type="date"
+                            name="dob"
+                            value={values.dob}
+                            onChange={handleChange}
+                            className="name-inp inp"
+                            placeholder="Date of Birth"
+                          />
+                          {touched.dob && errors.dob && (
+                            <div className="error-message">
+                              {errors.dob}
+                            </div>
+                          )}
+                          <select
+                            name="gender"
+                            value={values.gender}
+                            onChange={handleChange}
+                            className="name-inp inp"
+                          >
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="prefer_not_to_say">
+                              Prefer not to say
+                            </option>
+                          </select>
+                          <input
+                            type="text"
+                            name="country"
+                            className="name-inp inp"
+                            value={values.country}
+                            onChange={handleChange}
+                            placeholder="Country"
+                          />
+                          {touched.country && errors.country && (
+                            <div className="error-message">
+                              {errors.country}
+                            </div>
+                          )}
+                        </div>
+                        <textarea
+                          style={{ width: "288px", height: "150px" }}
+                          name="description"
+                          value={values.description}
+                          onChange={handleChange}
+                          placeholder="Description"
+                        />
+                        {touched.description && errors.description && (
+                          <div className="error-message">
+                            {errors.description}
+                          </div>
+                        )}
+                        <div className="edit-actions">
+                          <button className="btn-icon" type="submit">
+                            <CheckIcon className="CheckIcon" />
+                          </button>
+                          <button
+                            className="btn-icons"
+                            type="button"
+                            onClick={handleCancelEdit}
+                          >
+                            <CloseIcon className="CheckIcons" />
+                          </button>
+                        </div>
+                      </form>
+                    )}
+                  </Formik>
+                </div>
+              )}
             </div>
           );
         })}
       </div>
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="close">
+              <div
+                style={{ cursor: "pointer" }}
+                className="close-btn"
+                onClick={() => {
+                  setShowModal(false);
+                }}
+              >
+                <X className="cross-btn" />
+              </div>
+            </div>
+            <p>Are you sure you want to delete?</p>
+            <div className="btn-all">
+              <button className="bac" onClick={() => setShowModal(false)}>Cancel</button>
+              <button className="del" onClick={() => handleDelete(deleteId)}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
